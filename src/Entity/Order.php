@@ -50,6 +50,16 @@ class Order
 
     #[ORM\OneToMany(mappedBy: 'myOrder', targetEntity: OrderDetails::class)]
     private Collection $orderDetails;
+    
+    #[ORM\Column(length: 255)]
+    private ?string $status = self::STATUS_CART;
+
+        /**
+     * An order that is in progress, not placed yet.
+     *
+     * @var string
+     */
+    public const STATUS_CART = 'cart';
 
     public function __construct()
     {
@@ -217,6 +227,18 @@ class Order
                 $orderDetail->setMyOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

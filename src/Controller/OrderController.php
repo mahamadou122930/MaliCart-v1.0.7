@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Carrier;
 use App\Entity\User;
+use App\Factory\OrderFactory;
 use App\Form\OrderCarrierType;
 use App\Form\OrderType;
+use App\Manager\CartManager;
 use App\Repository\ShopProductRepository;
-use App\Service\OrderService;
+
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,17 +24,19 @@ class OrderController extends AbstractController
 {
     private $orderService;
     private $entityManager;
+    private $manager;
 
-    public function __construct(EntityManagerInterface $entityManager,OrderService $orderService)
+    public function __construct(EntityManagerInterface $entityManager,OrderFactory $orderService, CartManager $manager)
     {
         $this->entityManager = $entityManager;
         $this->orderService = $orderService;  
+        $this->manager = $manager;
     }
 
     #[Route('/proceed-to-checkout', name: 'checkout')]
     public function proceedToCheckout(SessionInterface $session, ShopProductRepository $shopProductRepository): Response
     {
-        $panier = $session->get('panier', []);
+        $panier = $this->manager->getCurrentCart();
 
         $panierWithData = [];
         $carrierPrice = 0;
@@ -178,4 +182,16 @@ class OrderController extends AbstractController
         ]);
     }
 
+    #[Route('/checkout-review', name: 'review')]
+    public function review(SessionInterface $session): Response
+    {
+        $currentOrder = $session->get('current_order', []);
+        $user = $this->getUser();
+
+
+        return $this->render('order/order_review.html.twig', [
+            'currentOrder'=> $currentOrder,
+            'user'=> $user
+        ]);
+    }
 }
