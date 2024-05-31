@@ -26,7 +26,7 @@ class ShopProductController extends AbstractController
 
 
 
-        return $this->render('shop_product/index.html.twig', [
+        return $this->render('article/index.html.twig', [
             'shopproducts'=> $shopproducts,
         ]);
     }
@@ -41,7 +41,7 @@ class ShopProductController extends AbstractController
             return $this->redirectToRoute('shop.index');
         }
 
-        return $this->render('shop_product/show.html.twig', [
+        return $this->render('article/show.html.twig', [
             'shopproduct'=> $shopproduct,
         ]);
     }
