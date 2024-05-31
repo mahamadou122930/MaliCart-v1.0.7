@@ -19,6 +19,7 @@ class CartController extends AbstractController
     #[Route( name: 'index')]
     public function index(SessionInterface $session, ShopProductRepository $productRepository): Response
     {
+        
         $panier = $session->get('panier', []);
 
         $panierWithData = [];
@@ -118,7 +119,6 @@ class CartController extends AbstractController
             }
         }
         $session->set('panier', $panier);
-
         return $this->redirectToRoute('cart.index');
     }
 }
