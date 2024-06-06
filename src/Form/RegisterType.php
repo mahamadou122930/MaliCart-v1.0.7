@@ -22,6 +22,7 @@ class RegisterType extends AbstractType
         $builder
         ->add('firstname', TextType::class, [
             'empty_data' => '',
+            'attr' => ['class' => 'save'],
             'label'=> 'Firstname',
             'invalid_message'=> 'Please enter your first name!'
         ])
