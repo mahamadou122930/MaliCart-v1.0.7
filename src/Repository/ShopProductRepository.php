@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Classe\Search;
 use App\Entity\ShopProduct;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\QueryException;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -48,6 +49,31 @@ class ShopProductRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function search($mots): array
+    {
+        $entityManager = $this->getEntityManager();
+        $queryBuilder = $entityManager->getRepository(ShopProduct::class)->createQueryBuilder('p');
+
+        $queryBuilder
+            ->where("p.name LIKE :mots OR p.description LIKE :mots")
+            ->setParameter('mots', '%' . $mots . '%');
+
+        $query = $queryBuilder->getQuery();
+
+        try {
+            $results = $query->getResult();
+        } catch (QueryException $e) {
+            // handle query exception
+            $results = array();
+        }
+
+        return $results;
+    }
+
+        
+
+
 
     // /**
     //  * Récupère le prix minimum et maximum correspondant a une recherche
